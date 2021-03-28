@@ -1,0 +1,96 @@
+@use "sass:color";
+
+@import url("normalize.css");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap");
+
+$bg-color: #264653;
+$label-color: #e9c46a;
+$border-color: #2a9d8f;
+$color3: #f4a261;
+$color4: #e76f51;
+$main-font-size: 25px;
+
+body {
+  background-color: $bg-color;
+  color: $color3;
+  font-size: $main-font-size;
+  font-family: Roboto;
+  font-weight: 300;
+}
+
+.container {
+  width: 70vw;
+  margin: 50px auto;
+}
+
+.palindrome-search-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid $border-color;
+
+  &-element {
+    margin: 20px 0;
+  }
+
+  &__label {
+    display: block;
+  }
+
+  #palindrome-search-input {
+    display: block;
+    border: 0;
+    border: 1px solid $bg-color;
+    border-bottom-color: $border-color;
+    border-radius: 10px;
+    color: $color3;
+    font-size: $main-font-size;
+    font-weight: 500;
+    background-color: $bg-color;
+    text-align: center;
+    width: 80%;
+    transition: border-color 1s ease-in-out;
+    padding: 10px 10px 0px 10px;
+
+    &:focus {
+      outline: none;
+      border: 1px solid adjust-color($border-color, $alpha: -0.6);
+      border-bottom-color: $border-color;
+    }
+  }
+
+  &__start-button {
+    display: block;
+    background-color: $border-color;
+    border: 0;
+    border-radius: 10px;
+    color: $bg-color;
+    padding: 10px;
+    font-size: $main-font-size;
+    &:hover {
+      box-shadow: 0 0 3px $border-color;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 5px $border-color;
+    }
+  }
+}
+
+.palindrome-search-output-characters {
+  list-style: none;
+}
+
+.palindrome-search-output-character {
+  text-align: center;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 5px;
+  width: 30px;
+  height: 30px;
+  margin: 1px;
+  background-color: $label-color;
+  color: $bg-color;
+  font-size: 15px;
+}

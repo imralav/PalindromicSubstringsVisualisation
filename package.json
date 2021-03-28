@@ -1,0 +1,40 @@
+{
+  "name": "palindromic-substrings-visualisation",
+  "version": "1.0.0",
+  "description": "A graphical representation of my algorithm that solves the [Palindromic Substrings problem from LeetCode](https://leetcode.com/problems/palindromic-substrings/)",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass": "node-sass src/main.scss dist/main.css",
+    "sass:watch": "node-sass --watch src/main.scss dist/main.css",
+    "build": "webpack --mode=production",
+    "build:dev": "webpack",
+    "serve": "webpack serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imralav/PalindromicSubstringsVisualisation.git"
+  },
+  "keywords": [],
+  "author": "imralav@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/imralav/PalindromicSubstringsVisualisation/issues"
+  },
+  "homepage": "https://github.com/imralav/PalindromicSubstringsVisualisation#readme",
+  "devDependencies": {
+    "css-loader": "^5.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.1.0",
+    "typescript": "^4.2.3",
+    "webpack": "^5.28.0",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "normalize.css": "^8.0.1"
+  }
+}
