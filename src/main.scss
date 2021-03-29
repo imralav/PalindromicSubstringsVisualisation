@@ -79,6 +79,13 @@ body {
 }
 
 .palindrome-search-output-characters {
+  padding: 0;
+  max-width: 70vw;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
   list-style: none;
 }
 
@@ -87,8 +94,8 @@ body {
   display: inline-block;
   box-sizing: border-box;
   padding: 5px;
-  width: 30px;
-  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
   margin: 1px;
   background-color: $label-color;
   color: $bg-color;
