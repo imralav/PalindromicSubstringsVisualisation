@@ -1,38 +1,36 @@
-import { Subject } from "rxjs";
+import { Observable, of, Subscriber } from "rxjs";
+
+interface PalindromeSearchEvent {}
+
+class AllPalindromesFoundEvent implements PalindromeSearchEvent {
+  constructor(public amount: number) {}
+}
+
+class PalindromeFoundEvent implements PalindromeSearchEvent {
+  constructor(public from: number, public to: number, public value: string) {}
+}
+
+class NoPalindromeFoundEvent implements PalindromeSearchEvent {}
 
 class PalindromeSearch {
-  private algorithmEvents = new Subject<string>();
-  constructor(private sentence: string) {}
+  constructor(
+    private sentence: string,
+    private eventStream: Subscriber<PalindromeSearchEvent>
+  ) {}
 
-  public readonly eventsStream = this.algorithmEvents.asObservable();
-
-  public async search() {
-    if (this.sentence.length === 0) {
-      this.algorithmEvents.next("Empty sentence");
-      this.algorithmEvents.complete();
-      return 0;
-    }
-    return this.findPalindromes();
-  }
-
-  private async findPalindromes() {
+  findPalindromes() {
     const chars = this.sentence.split("");
     let results = 0;
     for (let i = 0; i < chars.length; i++) {
       results++;
-      this.algorithmEvents.next(`Odd-length palindrome found: ${chars[i]}`);
+      this.sendOddLengthPalindromeFoundEvent(i, 0);
       //for odd-length palindromes
       let steps = 1;
+      //can go X steps to the left and right?
       while (this.canExpandFromOddLengthPalindrome(i, steps)) {
-        //can go X steps to the left and right?
         if (chars[i - steps] == chars[i + steps]) {
+          this.sendOddLengthPalindromeFoundEvent(i, steps);
           results++;
-          this.algorithmEvents.next(
-            `Odd-length palindrome found: ${this.sentence.substring(
-              i - steps,
-              i + steps
-            )}`
-          );
           steps++;
         } else {
           break;
@@ -41,16 +39,13 @@ class PalindromeSearch {
       //for even-length palindromes
       steps = 1;
       if (i + 1 < this.sentence.length && chars[i] == chars[i + 1]) {
+        results++;
+        this.sendEvenLengthPalindromeFound(i, 0);
+        //can go X steps to the left and right?
         while (this.canExpandFromEvenLengthPalindrome(i, i + 1, steps)) {
-          //can go X steps to the left and right?
           if (chars[i - steps] == chars[i + 1 + steps]) {
             results++;
-            this.algorithmEvents.next(
-              `Even-length palindrome found: ${this.sentence.substring(
-                i - steps,
-                i + 1 + steps
-              )}`
-            );
+            this.sendEvenLengthPalindromeFound(i, steps);
             steps++;
           } else {
             break;
@@ -58,8 +53,28 @@ class PalindromeSearch {
         }
       }
     }
-    this.algorithmEvents.complete();
-    return results;
+    this.eventStream.next(new AllPalindromesFoundEvent(results));
+    this.eventStream.complete();
+  }
+
+  private sendEvenLengthPalindromeFound(i: number, steps: number) {
+    this.eventStream.next(
+      new PalindromeFoundEvent(
+        i - steps,
+        i + 1 + steps,
+        this.sentence.substring(i - steps, i + 2 + steps)
+      )
+    );
+  }
+
+  private sendOddLengthPalindromeFoundEvent(i: number, steps: number) {
+    this.eventStream.next(
+      new PalindromeFoundEvent(
+        i - steps,
+        i + steps,
+        this.sentence.substring(i - steps, i + 1 + steps)
+      )
+    );
   }
 
   private canExpandFromEvenLengthPalindrome(left = 0, right = 0, steps = 1) {
@@ -71,4 +86,24 @@ class PalindromeSearch {
   }
 }
 
-export { PalindromeSearch };
+class PalindromeSearchInvoker {
+  constructor(private sentence: string) {}
+
+  public search() {
+    if (this.sentence.length === 0) {
+      return of(new NoPalindromeFoundEvent());
+    }
+    const newLocal = new Observable((subscriber) => {
+      new PalindromeSearch(this.sentence, subscriber).findPalindromes();
+    });
+    return newLocal;
+  }
+}
+
+export {
+  PalindromeSearchInvoker,
+  PalindromeSearchEvent,
+  NoPalindromeFoundEvent,
+  PalindromeFoundEvent,
+  AllPalindromesFoundEvent,
+};

@@ -1,44 +1,61 @@
 import { of } from "rxjs";
-import { concatMap, delay, tap } from "rxjs/operators";
+import { concatMap, delay, finalize, tap } from "rxjs/operators";
+import { FoundPalindromes } from "./components/found-palindromes.component";
+import { Visualisation } from "./components/visualisation.component";
 import "./main";
-import palindromeCharactersConverter from "./palindrome-characters-converter";
-import { PalindromeSearch } from "./palindrome-search-algorithm";
+import {
+  PalindromeFoundEvent,
+  PalindromeSearchInvoker,
+} from "./palindrome-search-algorithm";
 
 const DELAY_BETWEEN_EVENT_CONSUMPTION = 500;
+
+const foundPalindromes = new FoundPalindromes();
+const visualisation = new Visualisation();
 
 const palindromeSearchInput = document.querySelector(
   "#palindrome-search-input"
 )! as HTMLInputElement;
 palindromeSearchInput.addEventListener("input", (event) => {
   const newSentence = (event.target as HTMLInputElement).value;
-  rewritePalindromeSearchOutputCharacters(newSentence);
+  visualisation.clear();
+  visualisation.add(newSentence);
 });
-
-const rewritePalindromeSearchOutputCharacters = (newSentence: string) => {
-  const palindromeSearchOutputCharacters = document.querySelector(
-    ".palindrome-search-output-characters"
-  );
-  if (!Boolean(palindromeSearchOutputCharacters)) {
-    return;
-  }
-  palindromeSearchOutputCharacters!.innerHTML = "";
-  palindromeCharactersConverter(newSentence).forEach((characterElement) =>
-    palindromeSearchOutputCharacters!.appendChild(characterElement)
-  );
-};
 
 const palindromeSearchButton = document.querySelector(
   ".palindrome-search-input__start-button"
-)!;
+)! as HTMLInputElement;
 palindromeSearchButton.addEventListener("click", async (event) => {
-  const palindromeSearch = new PalindromeSearch(palindromeSearchInput.value);
-  palindromeSearch.eventsStream
+  palindromeSearchInput.disabled = true;
+  palindromeSearchButton.disabled = true;
+  foundPalindromes.clear();
+  const palindromeSearch = new PalindromeSearchInvoker(
+    palindromeSearchInput.value
+  );
+  palindromeSearch
+    .search()
     .pipe(
       concatMap((event) =>
         of(event).pipe(delay(DELAY_BETWEEN_EVENT_CONSUMPTION))
       ),
-      tap((event) => console.log("Event ", event))
+      tap((event) => {
+        if (event instanceof PalindromeFoundEvent) {
+          const palidromeFoundEvent = event as PalindromeFoundEvent;
+          foundPalindromes.add(palidromeFoundEvent.value);
+          visualisation.highlight(
+            palidromeFoundEvent.from,
+            palidromeFoundEvent.to
+          );
+        }
+      }),
+      finalize(() => {
+        visualisation.lowlightAll();
+        palindromeSearchInput.disabled = false;
+        palindromeSearchButton.disabled = false;
+      })
     )
     .subscribe();
-  console.log(await palindromeSearch.search());
+  //zablokuj input i przycisk
+  //odpal animacje pulsowania na przycisku
+  //zakoncz animacje pulsowania na przycisku
 });

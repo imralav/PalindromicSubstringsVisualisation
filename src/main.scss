@@ -27,7 +27,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid $border-color;
 
   &-element {
     margin: 20px 0;
@@ -78,26 +77,46 @@ body {
   }
 }
 
-.palindrome-search-output-characters {
-  padding: 0;
-  max-width: 70vw;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  align-content: center;
-  list-style: none;
-}
+.palindrome-search-output {
+  &-characters {
+    padding: 0;
+    max-width: 70vw;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    list-style: none;
+  }
 
-.palindrome-search-output-character {
-  text-align: center;
-  display: inline-block;
-  box-sizing: border-box;
-  padding: 5px;
-  min-width: 30px;
-  min-height: 30px;
-  margin: 1px;
-  background-color: $label-color;
-  color: $bg-color;
-  font-size: 15px;
+  &-character {
+    text-align: center;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 5px;
+    min-width: 30px;
+    min-height: 30px;
+    margin: 1px;
+    background-color: $label-color;
+    color: $bg-color;
+    font-size: 15px;
+
+    &.highlight {
+      background: hotpink;
+    }
+  }
+
+  &-found-palindromes {
+    border-bottom: 1px solid $border-color;
+
+    &-container {
+      list-style: square;
+    }
+  }
+
+  &-palindrome {
+    display: inline-block;
+    margin: 5px 5px;
+    font-size: 15px;
+  }
 }
