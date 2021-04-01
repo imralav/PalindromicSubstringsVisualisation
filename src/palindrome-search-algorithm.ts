@@ -10,6 +10,10 @@ class PalindromeFoundEvent implements PalindromeSearchEvent {
   constructor(public from: number, public to: number, public value: string) {}
 }
 
+class PalindromeInspectedEvent implements PalindromeSearchEvent {
+  constructor(public from: number, public to: number) {}
+}
+
 class NoPalindromeFoundEvent implements PalindromeSearchEvent {}
 
 class PalindromeSearch {
@@ -23,12 +27,14 @@ class PalindromeSearch {
     let results = 0;
     for (let i = 0; i < chars.length; i++) {
       results++;
+      this.sendPalindromeInspectedEvent(i, i);
       this.sendOddLengthPalindromeFoundEvent(i, 0);
       //for odd-length palindromes
       let steps = 1;
       //can go X steps to the left and right?
       while (this.canExpandFromOddLengthPalindrome(i, steps)) {
         if (chars[i - steps] == chars[i + steps]) {
+          this.sendPalindromeInspectedEvent(i - steps, i + steps);
           this.sendOddLengthPalindromeFoundEvent(i, steps);
           results++;
           steps++;
@@ -38,11 +44,13 @@ class PalindromeSearch {
       }
       //for even-length palindromes
       steps = 1;
+      this.sendPalindromeInspectedEvent(i, i + 1);
       if (i + 1 < this.sentence.length && chars[i] == chars[i + 1]) {
         results++;
         this.sendEvenLengthPalindromeFound(i, 0);
         //can go X steps to the left and right?
         while (this.canExpandFromEvenLengthPalindrome(i, i + 1, steps)) {
+          this.sendPalindromeInspectedEvent(i - steps, i + 1 + steps);
           if (chars[i - steps] == chars[i + 1 + steps]) {
             results++;
             this.sendEvenLengthPalindromeFound(i, steps);
@@ -55,6 +63,10 @@ class PalindromeSearch {
     }
     this.eventStream.next(new AllPalindromesFoundEvent(results));
     this.eventStream.complete();
+  }
+
+  private sendPalindromeInspectedEvent(from: number, to: number) {
+    this.eventStream.next(new PalindromeInspectedEvent(from, to));
   }
 
   private sendEvenLengthPalindromeFound(i: number, steps: number) {
@@ -89,11 +101,11 @@ class PalindromeSearch {
 class PalindromeSearchInvoker {
   constructor(private sentence: string) {}
 
-  public search() {
+  public search(): Observable<PalindromeSearchEvent> {
     if (this.sentence.length === 0) {
       return of(new NoPalindromeFoundEvent());
     }
-    const newLocal = new Observable((subscriber) => {
+    const newLocal = new Observable<PalindromeSearchEvent>((subscriber) => {
       new PalindromeSearch(this.sentence, subscriber).findPalindromes();
     });
     return newLocal;
@@ -106,4 +118,5 @@ export {
   NoPalindromeFoundEvent,
   PalindromeFoundEvent,
   AllPalindromesFoundEvent,
+  PalindromeInspectedEvent,
 };

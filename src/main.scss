@@ -3,16 +3,17 @@
 @import url("normalize.css");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap");
 
-$bg-color: #264653;
-$label-color: #e9c46a;
-$border-color: #2a9d8f;
-$color3: #f4a261;
-$color4: #e76f51;
+$bg-primary: #264653;
+$bg-highlight: #2a9d8f;
+$primary: #e9c46a;
+$secondary: #f4a261;
+$highlight: #e76f51;
+$success: #6fe751;
 $main-font-size: 25px;
 
 body {
-  background-color: $bg-color;
-  color: $color3;
+  background-color: $bg-primary;
+  color: $secondary;
   font-size: $main-font-size;
   font-family: Roboto;
   font-weight: 300;
@@ -39,13 +40,13 @@ body {
   #palindrome-search-input {
     display: block;
     border: 0;
-    border: 1px solid $bg-color;
-    border-bottom-color: $border-color;
+    border: 1px solid $bg-primary;
+    border-bottom-color: $bg-highlight;
     border-radius: 10px;
-    color: $color3;
+    color: $secondary;
     font-size: $main-font-size;
     font-weight: 500;
-    background-color: $bg-color;
+    background-color: $bg-primary;
     text-align: center;
     width: 80%;
     transition: border-color 1s ease-in-out;
@@ -53,26 +54,26 @@ body {
 
     &:focus {
       outline: none;
-      border: 1px solid adjust-color($border-color, $alpha: -0.6);
-      border-bottom-color: $border-color;
+      border: 1px solid adjust-color($bg-highlight, $alpha: -0.6);
+      border-bottom-color: $bg-highlight;
     }
   }
 
   &__start-button {
     display: block;
-    background-color: $border-color;
+    background-color: $bg-highlight;
     border: 0;
     border-radius: 10px;
-    color: $bg-color;
+    color: $bg-primary;
     padding: 10px;
     font-size: $main-font-size;
     &:hover {
-      box-shadow: 0 0 3px $border-color;
+      box-shadow: 0 0 3px $bg-highlight;
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 5px $border-color;
+      box-shadow: 0 0 5px $bg-highlight;
     }
   }
 }
@@ -97,17 +98,21 @@ body {
     min-width: 30px;
     min-height: 30px;
     margin: 1px;
-    background-color: $label-color;
-    color: $bg-color;
+    background-color: $bg-highlight;
+    color: $bg-primary;
     font-size: 15px;
 
-    &.highlight {
-      background: hotpink;
+    &.found {
+      background: $success;
+    }
+
+    &.inspected {
+      background: $primary;
     }
   }
 
   &-found-palindromes {
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid $bg-highlight;
 
     &-container {
       list-style: square;

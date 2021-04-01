@@ -25,6 +25,20 @@
         >
           and let's find the palindromes
         </button>
+        <label
+          for="palindrome-search-speed"
+          class="palindrome-search-input-element palindrome-search-input__label"
+        >
+          at the speed of
+          <span id="palindrome-search-input-speed-view">100</span>ms per step
+        </label>
+        <input
+          type="range"
+          min="10"
+          max="1000"
+          value="100"
+          id="palindrome-search-input-speed"
+        />
       </section>
       <section class="palindrome-search-output">
         <section class="palindrome-search-output-found-palindromes">
