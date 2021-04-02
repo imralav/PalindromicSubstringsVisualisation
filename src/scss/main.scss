@@ -1,0 +1,185 @@
+@use "sass:color";
+@use "./palindrome-search-input";
+
+@import url("normalize.css");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap");
+
+$bg-primary: #264653;
+$darkened-bg-primary: adjust-color($bg-primary, $lightness: -5%);
+$bg-highlight: #2a9d8f;
+$primary: #e9c46a;
+$secondary: #f4a261;
+$highlight: #e76f51;
+$success: #6fe751;
+$main-font-size: 20px;
+
+@keyframes searchInProgress {
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.search-in-progress-animation {
+  animation: searchInProgress 1s ease-in-out infinite alternate;
+}
+
+body {
+  background-color: $bg-primary;
+  color: $secondary;
+  font-size: $main-font-size;
+  font-family: Roboto;
+  font-weight: 300;
+  padding: 10px;
+}
+
+.container {
+  width: 100%;
+  margin: 15px auto;
+
+  .palindrome-search-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &-element {
+      margin: 5px 0;
+    }
+
+    &__label {
+      display: block;
+      text-align: center;
+    }
+
+    .control-buttons-container {
+      display: flex;
+      width: 80%;
+      justify-content: space-around;
+    }
+
+    #palindrome-search-input {
+      display: block;
+      border: 0;
+      border: 1px solid $bg-primary;
+      border-bottom-color: $bg-highlight;
+      border-radius: 10px;
+      color: $secondary;
+      font-size: $main-font-size;
+      font-weight: 500;
+      background-color: $bg-primary;
+      text-align: center;
+      width: 80%;
+      transition: border-color 0.5s ease-in-out, opacity 0.5s linear;
+      padding: 10px 10px 0px 10px;
+      background-color: $darkened-bg-primary;
+
+      &:focus {
+        outline: none;
+        border: 1px solid adjust-color($bg-highlight, $alpha: -0.6);
+        border-bottom-color: $bg-highlight;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+
+    &__start-button {
+      display: block;
+      background-color: $bg-highlight;
+      border: 0;
+      border-radius: 10px;
+      color: $bg-primary;
+      padding: 10px;
+      font-size: $main-font-size - 5px;
+      transition: opacity 0.5s linear;
+      &:hover {
+        box-shadow: 0 0 3px $bg-highlight;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 5px $bg-highlight;
+      }
+    }
+  }
+
+  .palindrome-search-output {
+    &-characters {
+      padding: 0;
+      width: 90%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      align-content: center;
+      list-style: none;
+    }
+
+    &-character {
+      text-align: center;
+      display: inline-block;
+      box-sizing: border-box;
+      padding: 5px;
+      min-width: 30px;
+      min-height: 30px;
+      margin: 1px;
+      background-color: $bg-highlight;
+      color: $bg-primary;
+      font-size: 15px;
+
+      &.found {
+        background: $success;
+      }
+
+      &.inspected {
+        background: $primary;
+      }
+    }
+
+    &-found-palindromes {
+      border-bottom: 1px solid $bg-highlight;
+      &-container {
+        list-style: square;
+        padding: 10px;
+        max-height: 300px;
+        overflow: auto;
+        background-color: $darkened-bg-primary;
+        box-shadow: 0 0 5px 5px $darkened-bg-primary;
+      }
+    }
+
+    &-palindrome {
+      display: inline-block;
+      margin: 5px 5px;
+      font-size: $main-font-size - 5px;
+    }
+  }
+}
+
+@media (min-width: 620px) {
+  body {
+    font-size: $main-font-size + 5px;
+    padding: 50px;
+  }
+
+  .container {
+    .palindrome-search-input {
+      &-element {
+        margin: 10px 0;
+      }
+      &__start-button {
+        font-size: $main-font-size;
+      }
+    }
+
+    .palindrome-search-output {
+      &-palindrome {
+        font-size: $main-font-size;
+      }
+    }
+  }
+}

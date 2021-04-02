@@ -2,7 +2,7 @@ import { fromEvent, of } from "rxjs";
 import { concatMap, delay, finalize, switchMap, tap } from "rxjs/operators";
 import { FoundPalindromes } from "./components/found-palindromes.component";
 import { Visualisation } from "./components/visualisation.component";
-import "./main";
+import "./scss/main";
 import {
   AllPalindromesFoundEvent,
   NoPalindromeFoundEvent,
