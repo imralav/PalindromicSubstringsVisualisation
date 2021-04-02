@@ -1,8 +1,14 @@
-import { of, partition, from } from "rxjs";
+import { of, partition, from, fromEvent } from "rxjs";
+import { map, tap } from "rxjs/operators";
 import { characterConverter } from "../converters";
+
+interface PalindromeCache {
+  [key: string]: number[];
+}
 
 class VisualisationComponent {
   private container: HTMLElement;
+  private palindromesCache: PalindromeCache = {};
   constructor() {
     this.container = document.querySelector(
       ".palindrome-search-output-characters"
@@ -11,6 +17,7 @@ class VisualisationComponent {
 
   clear() {
     this.container.innerHTML = "";
+    this.palindromesCache = {};
   }
 
   add(newSentence: string) {
@@ -19,12 +26,25 @@ class VisualisationComponent {
     );
   }
 
-  highlightFound(fromIndex: number, toIndex: number) {
-    this.highlight(fromIndex, toIndex, "found");
+  palindromeFound(fromIndex: number, toIndex: number, value: string) {
+    this.highlightPalindromeFound(fromIndex, toIndex);
+    this.palindromesCache[value] = [fromIndex, toIndex];
   }
 
-  highlightInspected(fromIndex: number, toIndex: number) {
+  highlightPalindrome(value: string) {
+    if (!this.palindromesCache[value]) {
+      return;
+    }
+    const [fromIndex, toIndex] = this.palindromesCache[value];
+    this.highlightPalindromeFound(fromIndex, toIndex);
+  }
+
+  palindromeInspected(fromIndex: number, toIndex: number) {
     this.highlight(fromIndex, toIndex, "inspected");
+  }
+
+  private highlightPalindromeFound(fromIndex: number, toIndex: number) {
+    this.highlight(fromIndex, toIndex, "found");
   }
 
   private highlight(fromIndex: number, toIndex: number, stylingClass: string) {

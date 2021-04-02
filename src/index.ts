@@ -5,14 +5,15 @@ import { Visualisation } from "./components/visualisation.component";
 import "./main";
 import {
   AllPalindromesFoundEvent,
+  NoPalindromeFoundEvent,
   PalindromeFoundEvent,
   PalindromeInspectedEvent,
   PalindromeSearchInvoker,
 } from "./palindrome-search-algorithm";
 import palindromeSearchSpeed from "./palindrome-search-speed";
 
-const foundPalindromes = new FoundPalindromes();
 const visualisation = new Visualisation();
+const foundPalindromes = new FoundPalindromes(visualisation);
 
 let palindromeSearchSpeedValue = 100; //TODO:should I move it to the stream or is it fine?
 palindromeSearchSpeed().subscribe(
@@ -28,13 +29,19 @@ palindromeSearchInput.addEventListener("input", (event) => {
   visualisation.add(newSentence);
 });
 
-const palindromeSearchButton = document.querySelector(
+const palindromeSearchStartButton = document.querySelector(
   ".palindrome-search-input__start-button"
 )! as HTMLInputElement;
-const palindromeSearchStartStream = fromEvent(palindromeSearchButton, "click");
+const palindromeSearchStartStream = fromEvent(
+  palindromeSearchStartButton,
+  "click"
+);
 palindromeSearchStartStream
   .pipe(
-    tap(() => clearOldPalindromeAndDisableInput()),
+    //and let's find the palindromes
+    tap(() => {
+      beginSearch();
+    }),
     switchMap(() =>
       new PalindromeSearchInvoker(palindromeSearchInput.value).search()
     ),
@@ -43,46 +50,70 @@ palindromeSearchStartStream
     ),
     tap(handleEventVisualisation()),
     finalize(() => {
+      //why doesnt it finalize?
       console.log("finalized");
-      lowlighAllAndEnableInput(); //why doesnt it finalize?
+      finishSearch();
     })
   )
   .subscribe();
-//odpal animacje pulsowania na przycisku
-//zakoncz animacje pulsowania na przycisku
-//dostosowanie predkosci
-//zatrzymywanie
+
+function beginSearch() {
+  console.log("start");
+  replaceStartButtonText("looking for the palindromes...");
+  toggleAnimationOnStartButton();
+  clearOldPalindromeAndDisableInput();
+}
+
+function replaceStartButtonText(text: string) {
+  palindromeSearchStartButton.textContent = text;
+}
+
+function toggleAnimationOnStartButton() {
+  palindromeSearchStartButton.classList.toggle("search-in-progress-animation");
+}
 
 function clearOldPalindromeAndDisableInput() {
   palindromeSearchInput.disabled = true;
-  palindromeSearchButton.disabled = true;
+  palindromeSearchStartButton.disabled = true;
   foundPalindromes.clear();
+}
+
+function finishSearch() {
+  replaceStartButtonText("and let's find the palindromes");
+  toggleAnimationOnStartButton();
+  lowlighAllAndEnableInput();
 }
 
 function lowlighAllAndEnableInput() {
   visualisation.lowlightAll();
   palindromeSearchInput.disabled = false;
-  palindromeSearchButton.disabled = false;
+  palindromeSearchStartButton.disabled = false;
 }
 
 function handleEventVisualisation(): ((value: unknown) => void) | undefined {
   return (event) => {
     if (event instanceof PalindromeFoundEvent) {
       const palidromeFoundEvent = event as PalindromeFoundEvent;
-      foundPalindromes.add(palidromeFoundEvent.value);
-      visualisation.highlightFound(
+      const indexedPalindrome = foundPalindromes.addAndReturnIndexedPalindrome(
+        palidromeFoundEvent.value
+      );
+      visualisation.palindromeFound(
         palidromeFoundEvent.from,
-        palidromeFoundEvent.to
+        palidromeFoundEvent.to,
+        indexedPalindrome
       );
     } else if (event instanceof PalindromeInspectedEvent) {
       const palindromeInspectedEvent = event as PalindromeInspectedEvent;
-      visualisation.highlightInspected(
+      visualisation.palindromeInspected(
         palindromeInspectedEvent.from,
         palindromeInspectedEvent.to
       );
-    } else if (event instanceof AllPalindromesFoundEvent) {
+    } else if (
+      event instanceof AllPalindromesFoundEvent ||
+      event instanceof NoPalindromeFoundEvent
+    ) {
       console.log("All found");
-      lowlighAllAndEnableInput();
+      finishSearch();
     }
   };
 }

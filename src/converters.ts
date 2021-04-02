@@ -13,8 +13,9 @@ const palindromeConverter = (palindrome: string) => {
   const template = (document.querySelector(
     "#new-palindrome-template"
   )! as HTMLTemplateElement).content;
-  const palindromeELement = template.cloneNode(true) as HTMLElement;
-  palindromeELement.querySelector("li")!.innerHTML = palindrome;
+  const clonedTemplate = template.cloneNode(true) as HTMLElement;
+  const palindromeELement = clonedTemplate.querySelector("li")!;
+  palindromeELement.innerHTML = palindrome;
   return palindromeELement;
 };
 

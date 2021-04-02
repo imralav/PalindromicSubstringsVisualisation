@@ -37,6 +37,12 @@ body {
     display: block;
   }
 
+  .control-buttons-container {
+    display: flex;
+    width: 80%;
+    justify-content: space-around;
+  }
+
   #palindrome-search-input {
     display: block;
     border: 0;
@@ -49,7 +55,7 @@ body {
     background-color: $bg-primary;
     text-align: center;
     width: 80%;
-    transition: border-color 1s ease-in-out;
+    transition: border-color 0.5s ease-in-out, opacity 0.5s linear;
     padding: 10px 10px 0px 10px;
 
     &:focus {
@@ -57,6 +63,20 @@ body {
       border: 1px solid adjust-color($bg-highlight, $alpha: -0.6);
       border-bottom-color: $bg-highlight;
     }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes searchInProgress {
+    to {
+      transform: scale(1.1);
+    }
+  }
+
+  .search-in-progress-animation {
+    animation: searchInProgress 1s ease-in-out infinite alternate;
   }
 
   &__start-button {
@@ -67,13 +87,36 @@ body {
     color: $bg-primary;
     padding: 10px;
     font-size: $main-font-size;
+    transition: opacity 0.5s linear;
     &:hover {
       box-shadow: 0 0 3px $bg-highlight;
+    }
+
+    &:disabled {
+      opacity: 0.5;
     }
 
     &:focus {
       outline: none;
       box-shadow: 0 0 5px $bg-highlight;
+    }
+  }
+
+  &__stop-button {
+    display: none; //temporarily removing it as I cant plug it into the stream correctly
+    background-color: $highlight;
+    border: 0;
+    border-radius: 10px;
+    color: $bg-primary;
+    padding: 10px;
+    font-size: $main-font-size;
+    &:hover {
+      box-shadow: 0 0 3px $highlight;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 5px $highlight;
     }
   }
 }
