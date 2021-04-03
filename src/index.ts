@@ -1,3 +1,4 @@
+import { registerSW } from "./pwa";
 import { fromEvent, of } from "rxjs";
 import { concatMap, delay, finalize, switchMap, tap } from "rxjs/operators";
 import { FoundPalindromes } from "./components/found-palindromes.component";
@@ -11,6 +12,8 @@ import {
   PalindromeSearchInvoker,
 } from "./palindrome-search-algorithm";
 import palindromeSearchSpeed from "./palindrome-search-speed";
+
+registerSW();
 
 const visualisation = new Visualisation();
 const foundPalindromes = new FoundPalindromes(visualisation);
