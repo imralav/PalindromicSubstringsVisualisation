@@ -1,10 +1,9 @@
+import "./found-palindromes.component.scss";
 import { fromEvent } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { Visualisation } from "../components/visualisation.component";
 import { palindromeConverter } from "../converters";
-import { Visualisation } from "./visualisation.component";
 
-//TODO: on hover highlight the palindrome below
-class FoundPalindromesComponent {
+class FoundPalindromesComponentLegacy {
   private container: HTMLElement;
   constructor(private visualiser: Visualisation) {
     this.container = document.querySelector(
@@ -31,4 +30,4 @@ class FoundPalindromesComponent {
     return fullUniquePalindrome;
   }
 }
-export { FoundPalindromesComponent as FoundPalindromes };
+export { FoundPalindromesComponentLegacy as FoundPalindromes };

@@ -1,17 +1,7 @@
-@use "sass:color";
-@use "./palindrome-search-input";
+@import "./variables.scss";
 
 @import url("normalize.css");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap");
-
-$bg-primary: #264653;
-$darkened-bg-primary: adjust-color($bg-primary, $lightness: -5%);
-$bg-highlight: #2a9d8f;
-$primary: #e9c46a;
-$secondary: #f4a261;
-$highlight: #e76f51;
-$success: #6fe751;
-$main-font-size: 20px;
 
 @keyframes searchInProgress {
   to {
@@ -137,18 +127,6 @@ body {
 
       &.inspected {
         background: $primary;
-      }
-    }
-
-    &-found-palindromes {
-      border-bottom: 1px solid $bg-highlight;
-      &-container {
-        list-style: square;
-        padding: 10px;
-        max-height: 300px;
-        overflow: auto;
-        background-color: $darkened-bg-primary;
-        box-shadow: 0 0 5px 5px $darkened-bg-primary;
       }
     }
 
